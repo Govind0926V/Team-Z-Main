@@ -6,7 +6,8 @@ const userschema=  mongoose.Schema({
       age:Number,
       email:String,
       password:String,
-      posts:[{type:mongoose.Schema.Types.ObjectId,ref:"post"}]
+      posts:[{type:mongoose.Schema.Types.ObjectId,ref:"post"}],
+      comment:[{type:mongoose.Schema.Types.ObjectId,ref:"comment"}]
 })
 
 

@@ -1,6 +1,7 @@
 const mongoose=require('mongoose');
 
 const postschema=  mongoose.Schema({
+      heading:String,
       userinfo:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"user"
@@ -13,7 +14,8 @@ const postschema=  mongoose.Schema({
       likes:[
         {type:mongoose.Schema.Types.ObjectId,
         ref:"user"}
-      ]
+      ],
+      game:[{type:mongoose.Schema.Types.ObjectId,ref:"game"}],
 })
 
 
