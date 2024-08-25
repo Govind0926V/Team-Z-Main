@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p><%=post.heading%></p>
+    <p><%=post.user%></p>
+    <p><%=post.date%></p>
+    <p><%=post.content%></p>
+    <p><%=post.game%></p>
+    <form action="/post" method="post">
+        <textarea name="comment" id="comment" placeholder="Write Your Comment Here"></textarea>
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+</html>
