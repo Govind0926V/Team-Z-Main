@@ -5,9 +5,11 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const usermodel = require('./model/user');
 const postmodel =require("./model/post");
+const commentmodel=require("./model/comment")
 const game=require("./model/game")
 const cookieParser = require('cookie-parser');
 const { verify } = require('crypto');
+const post = require('./model/post');
 
 app.set("view engine", "ejs");
 
@@ -39,12 +41,19 @@ app.get('/logout', async (req, res) => {
 )
 
 
-app.post("/post",isLoggedIn,async(req,res) => {
+
+app.get('/createPost',isLoggedIn,async (req,res)=>{
+  let gamelist = await game.find();
+  res.render('createpost',{gamelist})
+})
+app.post('/createPost',isLoggedIn,async (req,res) => {
   let user=await usermodel.findOne({email:req.user.email});
-  let {content}=req.body;
+  let {heading,content,gamename}=req.body;
   let post=await postmodel.create({
     userinfo:user._id,
-    content
+    heading,
+    content,
+    gamename
   })
 
   user.posts.push(post._id)
@@ -52,6 +61,39 @@ app.post("/post",isLoggedIn,async(req,res) => {
   res.redirect('/profile');
 }
 )
+
+app.get('/post/:postid',async (req,res) => {
+  let post=await postmodel.findOne({_id:req.params.postid});
+  res.render('post',{post});
+}
+)
+
+
+// app.post('/post/:postid',isLoggedIn,async (req,res) => {
+//   let {comment}=req.body;
+//   let comment1=await comment.create({
+//     author:req.user._id,
+//     comment,
+//     parentId,
+
+//   })
+
+// }
+// )
+
+// app.post("/post",isLoggedIn,async(req,res) => {
+//   let user=await usermodel.findOne({email:req.user.email});
+//   let {content}=req.body;
+//   let post=await postmodel.create({
+//     userinfo:user._id,
+//     content
+//   })
+
+//   user.posts.push(post._id)
+//   await user.save();
+//   res.redirect('/profile');
+// }
+// )
 
 
 app.get('/creategame',isLoggedIn,async (req,res) => {
@@ -59,19 +101,6 @@ app.get('/creategame',isLoggedIn,async (req,res) => {
 }
 )
 
-app.get('/createPost',isLoggedIn,async (req,res) => {
-  let user=await usermodel.findOne({email:req.user.email});
-  let {content}=req.body;
-  let post=await postmodel.create({
-    userinfo:user._id,
-    content
-  })
-
-  user.posts.push(post._id)
-  await user.save();
-  res.redirect('/profile');
-}
-)
 
 app.post('/creategame',isLoggedIn,async (req,res) => {
   let {content,name,img}=req.body;
