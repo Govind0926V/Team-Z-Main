@@ -30,9 +30,11 @@ app.get('/create', (req, res) => {
 app.get("/profile",isLoggedIn,async (req,res) => {
   let user=await usermodel.findOne({email:req.user.email}).populate("posts")
   let gamer=await game.find();
-  res.render('profile',{user,gamer}); 
+  let post=await postmodel.find()
+
+  res.render('profile',{user,gamer,post}); 
 }
-)
+) 
  
 app.get('/logout', async (req, res) => {
   res.cookie("Token", "");
@@ -40,7 +42,10 @@ app.get('/logout', async (req, res) => {
 }
 )
 
-
+app.get('/home',async (req,res) => {
+  res.render('home');
+}
+)
 
 app.get('/createPost',isLoggedIn,async (req,res)=>{
   let gamelist = await game.find();
