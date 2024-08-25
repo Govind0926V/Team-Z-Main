@@ -83,6 +83,22 @@ app.post('/create', async (req, res) => {
 
 }
 )
+
+app.get("/like/:id",isLoggedIn,async (req,res) => {
+  let post=await postmodel.findOne({_id:req.params.id}).populate("userinfo");
+  if(post.likes.indexOf(req.user.userid) === -1){
+    post.likes.push(req.user.userid);
+  }
+  else{
+    post.likes.splice(post.likes.indexOf(req.user.userid),1);
+  }
+  await post.save();
+  res.redirect('/profile');
+}
+)
+
+
+
 app.post('/login', async (req, res) => {
   let { email, password } = req.body;
   let user = await usermodel.findOne({ email });
@@ -101,7 +117,7 @@ app.post('/login', async (req, res) => {
     );
   }
   else{
-    res.send('<span>No such User Exists Create one ? .. <a href="/">Create</a></span>')
+    res.send('<span>No such User Exists Create one ? .. <a href="/create">Create</a></span>')
   }
 }
 )
