@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const path = require('path');
 const usermodel = require('./model/user');
-const postmodel =require("./model/post")
+const postmodel =require("./model/post");
+const game=require("./model/game")
 const cookieParser = require('cookie-parser');
 const { verify } = require('crypto');
 
@@ -16,7 +17,7 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/', (req, res) => {
-  res.render('index');
+  res.render('index'); 
 }
 )
 app.get('/create', (req, res) => {
@@ -26,7 +27,8 @@ app.get('/create', (req, res) => {
 
 app.get("/profile",isLoggedIn,async (req,res) => {
   let user=await usermodel.findOne({email:req.user.email}).populate("posts")
-  res.render('profile',{user});
+  let gamer=await game.find();
+  res.render('profile',{user,gamer}); 
 }
 )
  
@@ -50,13 +52,46 @@ app.post("/post",isLoggedIn,async(req,res) => {
   res.redirect('/profile');
 }
 )
+
+
+app.get('/creategame',isLoggedIn,async (req,res) => {
+  res.render('creategame');
+}
+)
+
+app.get('/createPost',isLoggedIn,async (req,res) => {
+  let user=await usermodel.findOne({email:req.user.email});
+  let {content}=req.body;
+  let post=await postmodel.create({
+    userinfo:user._id,
+    content
+  })
+
+  user.posts.push(post._id)
+  await user.save();
+  res.redirect('/profile');
+}
+)
+
+app.post('/creategame',isLoggedIn,async (req,res) => {
+  let {content,name,img}=req.body;
+  let makegame=await game.create({
+      img,
+      name,
+      description:content
+  })
+   
+  res.redirect('/profile');
+}
+)
+
 app.post('/create', async (req, res) => {
   let { username, email, age, password } = req.body;
 
   let user = await usermodel.findOne({ email });
   if (user) {
     // res.send('<span>No such User Exists Create one ? .. <a href="/">Create</a></span>')
-    res.send('<span>You must be logged in first .. <a href="/">Log In</a></span>');
+    res.send('<span>This Email Is already registered Log In Instead... <a href="/">Log In</a></span>');
     // res.redirect('/')
     // res.send('<span>This Email Is already registered Log In Instead ? .. <a href="/">Log In</a>')
   }
@@ -133,4 +168,4 @@ function isLoggedIn(req,res,next){
   }
 }
  
-app.listen(3000);
+app.listen(5001);
