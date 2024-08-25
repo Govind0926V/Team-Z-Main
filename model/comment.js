@@ -1,13 +1,13 @@
-import mongoose from "mongoose";
+const mongoose=require('mongoose');
 
-const schema = new mongoose.Schema({
-  author: {type:String,required:true},
-  title: {type:String},
-  body: {type:String,required:true},
-  postedAt: {type:Date,required:true},
-  parentId: {type:mongoose.ObjectId,required:false},
-  rootId: {type:mongoose.ObjectId,required:false},
-});
-const Comment = mongoose.model('Comment', schema);
 
-export default Comment;
+const commentschema = new mongoose.Schema({
+    author: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+    post: { type: mongoose.Schema.Types.ObjectId, ref: 'post', required: true },
+    comment: { type: String, required: true },
+    postedAt: { type: Date, default: Date.now, required: true },
+    parentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }, // Parent comment
+    rootId: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' },   // Top-level comment
+  });
+
+module.exports=mongoose.model("comment",commentschema);
