@@ -43,7 +43,8 @@ app.get('/logout', async (req, res) => {
 )
 
 app.get('/home',async (req,res) => {
-  res.render('home');
+  let gamer=await game.find();
+  res.render('home',{gamer});
 }
 )
 
@@ -73,18 +74,23 @@ app.get('/post/:postid',async (req,res) => {
 }
 )
 
+app.get('/gamepage/:gameid',async (req,res) => {
+  let games = await game.findOne({_id:req.params.gameid});
+  res.render('gamepage',{games});
+}
+)
 
-// app.post('/post/:postid',isLoggedIn,async (req,res) => {
-//   let {comment}=req.body;
-//   let comment1=await comment.create({
-//     author:req.user._id,
-//     comment,
-//     parentId,
+app.post('/post/:postid',isLoggedIn,async (req,res) => {
+  let {comment}=req.body;
+  let comment1=await comment.create({
+    author:req.user._id,
+    comment,
+    parentId,
 
-//   })
+  })
 
-// }
-// )
+}
+)
 
 // app.post("/post",isLoggedIn,async(req,res) => {
 //   let user=await usermodel.findOne({email:req.user.email});
