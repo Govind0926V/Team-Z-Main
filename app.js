@@ -15,7 +15,6 @@ const Post = require('./model/post'); // Assuming you have a Post model
 
 
 app.set("view engine", "ejs");
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
@@ -33,7 +32,7 @@ app.get('/create', (req, res) => {
 app.get("/profile",isLoggedIn,async (req,res) => {
   let user=await usermodel.findOne({email:req.user.email}).populate("posts")
   let gamer=await game.find();
-  let post=await postmodel.find()
+  let post=await postmodel.find();
 
   res.render('profile',{user,gamer,post}); 
 }
@@ -47,7 +46,9 @@ app.get('/logout', async (req, res) => {
 
 app.get('/home',async (req,res) => {
   let gamer=await game.find();
-  res.render('home',{gamer});
+  let post=await postmodel.find()
+
+  res.render('home',{gamer,post});
 }
 )
 
@@ -71,6 +72,11 @@ app.post('/createPost',isLoggedIn,async (req,res) => {
 }
 )
 
+app.get('/trendingpage',async (req,res) => {
+  let gamer=await game.find();
+  res.render('trendingpage',{gamer});
+}
+)
 
 app.get('/gamepage/:gameid',async (req,res) => {
   let games = await game.findOne({_id:req.params.gameid});
