@@ -33,8 +33,9 @@ app.get("/profile",isLoggedIn,async (req,res) => {
   let user=await usermodel.findOne({email:req.user.email}).populate("posts")
   let gamer=await game.find();
   let post=await postmodel.find();
+  let comment=await Comment.find();
 
-  res.render('profile',{user,gamer,post}); 
+  res.render('profile',{user,gamer,post,comment}); 
 }
 ) 
  
@@ -84,6 +85,14 @@ app.get('/gamepage/:gameid',async (req,res) => {
 }
 )
 
+app.get('/gamepage/:gameid/generaldiscussion',async (req,res) => {
+
+  let games = await game.findOne({_id:req.params.gameid});
+  let post =await postmodel.find();
+  res.render('generaldiscussion',{games,post});
+
+}
+)
 
 // app.get('/post/:postid',async (req,res) => {
 //   let post=await postmodel.findOne({_id:req.params.postid});
@@ -160,6 +169,7 @@ app.post('/post/:postid/comment', isLoggedIn, async (req, res) => {
     let user=await usermodel.findOne({email:req.user.email});
       console.log("Step 1 is completed")
       const newComment = new Comment({
+          username:user.name,
           userinfo:user._id, // Assuming req.user is set after user authentication
           post: req.params.postid,
           comment: comment,
@@ -174,8 +184,7 @@ app.post('/post/:postid/comment', isLoggedIn, async (req, res) => {
           console.log()
           newComment.rootId = parentComment.rootId || parentComment._id;
           console.log("step 5");
-      }
-      
+      }      
       await newComment.save();
       res.redirect(`/post/${req.params.postid}`);
   } catch (error) {

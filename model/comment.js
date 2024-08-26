@@ -14,6 +14,7 @@ const mongoose = require('mongoose');
 
 const commentschema = new mongoose.Schema({
     userinfo: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+    username:String,
     post: { type: mongoose.Schema.Types.ObjectId, ref: 'post', required: true },
     comment: { type: String, required: true },
     postedAt: { type: Date, default: Date.now },
