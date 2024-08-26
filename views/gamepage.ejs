@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Black and Gold Theme</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=New+Amsterdam&display=swap');
+
+        .font-custom {
+            font-family: 'New Amsterdam', cursive;
+        }
+
+        .bg-custom {
+            background-image: url('<%=games.img%>'); /* Update this path if necessary */
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gradient-custom {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.5));
+        }
+        .bg-gold {
+            background-color: #FFD700; /* Custom gold color */
+        }
+        .text-gold {
+            color: #FFD700; /* Custom gold color */
+        }
+    </style>
+</head>
+<body class="bg-custom flex min-h-screen w-full text-white">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-transparent bg-opacity-70 text-white p-4 shadow-lg transform transition duration-300 hover:shadow-2xl hover:bg-black rounded-lg fixed top-4 left-4 h-auto max-h-[calc(100vh-2rem)] overflow-y-auto z-10">
+        <div class="text-3xl font-custom mb-4">Sidebar</div>
+        <nav>
+
+            <ul>
+                <li class="mb-4">
+                    <a href="" class="block py-2 px-4 bg-transparent text-white hover:bg-green-500 rounded-lg transition">Home</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="block py-2 px-4 bg-transparent text-white hover:bg-green-500 rounded-lg transition">Trending Games</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="block py-2 px-4 bg-transparent text-white hover:bg-green-500 rounded-lg transition">Discussions</a>
+                </li>
+                <li class="mb-4">
+                    <a href="/profile" class="block py-2 px-4 bg-transparent text-white hover:bg-green-500 rounded-lg transition">Profile</a>
+                </li>
+        
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="fixed bottom-8 left-8 right-8 p-6 bg-gradient-custom border-t-2 border-gray-600 shadow-lg transform transition-transform duration-300 hover:scale-105 rounded-lg z-20 text-white">
+        <h1 class="text-3xl font-custom mb-4">Main Content</h1>
+        <p>This is where your main content will go. The sidebar is floating with a reduced height and feature buttons.</p>
+    </div>
+
+</body>
+</html>
