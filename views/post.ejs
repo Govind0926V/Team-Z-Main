@@ -1,8 +1,57 @@
-
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title><%= post.title %></title>
+    <style>
+        .comment {
+            margin-left: 0;
+            padding-left: 20px;
+            border-left: 1px solid #ccc;
+        }
+        .reply {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1><%= post.title %></h1>
+    <p><%= post.content %></p>
+
+    <h2>Comments:</h2>
+    <ul>
+        <% function renderComments(comments, level = 0) { %>
+            <% comments.forEach(comment => { %>
+                <li class="comment" style="margin-left: <%= level * 40 %>px;">
+                    <strong><%= comment.userinfo.username %>:</strong> <%= comment.comment %>
+                    <form action="/post/<%= post._id %>/comment" method="POST">
+                        <input type="hidden" name="parentId" value="<%= comment._id %>">
+                        <textarea name="comment" placeholder="Reply to this comment"></textarea>
+                        <button type="submit">Reply</button>
+                    </form>
+                    <% if (comment.replies && comment.replies.length > 0) { %>
+                        <ul class="reply">
+                            <%= renderComments(comment.replies, level + 1) %>
+                        </ul>
+                    <% } %>
+                </li>
+            <% }); %>
+        <% } %>
+        <%= renderComments(comments) %>
+    </ul>
+
+    <h2>Add a Comment:</h2>
+    <form action="/post/<%= post._id %>/comment" method="POST">
+        <textarea name="comment" placeholder="Write your comment here"></textarea>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
     <title><%= post.title %></title>
 </head>
 <body>
@@ -11,22 +60,28 @@
 
     <h2>Comments:</h2>
     <ul>
-        <% comments.forEach(comment => { %>
-            <li>
-                <strong><%= comment.userinfo.username %>:</strong> <%= comment.comment %>
-                <form action="/post/<%= post._id %>/comment" method="POST">
-                    <input type="hidden" name="parentId" value="<%= comment._id %>">
-                    <textarea name="comment" placeholder="Reply to this comment"></textarea>
-                    <button type="submit">Reply</button>
-                </form>
-            </li>
-        <% }) %>
-    </ul>
+        <% function renderComments(comments) { %>
+            <% comments.forEach(comment => { %>
+                <li>
+                    <strong><%= comment.userinfo.username %>:</strong> <%= comment.comment %>
+                    <form action="/post/<%= post._id %>/comment" method="POST">
+                        <input type="hidden" name="parentId" value="<%= comment._id %>">
+                        <textarea name="comment" placeholder="Reply to this comment"></textarea>
+                        <button type="submit">Reply</button>
+                    </form>
+                    <p><strong><%= comment.userinfo.name %>:</strong> <%= comment.comment %></p>
+                    <small>Posted at <%= comment.postedAt.toDateString() %></small>
+                    <% if (comment.children.length > 0) { %>
+                        <ul>
+                            <%= renderComments(comment.children) %>
+                        </ul>
+                    <% } %>
+                </li>
+            <% }); %>
+        <% } %>
 
-    <h2>Add a Comment:</h2>
-    <form action="/post/<%=post._id %>/comment" method="POST">
-        <textarea name="comment" placeholder="Write your comment here"></textarea>
-        <button type="submit">Submit</button>
-    </form>
+        <%= renderComments(comments) %>
+    </ul>
 </body>
-</html> 
+</html>
+

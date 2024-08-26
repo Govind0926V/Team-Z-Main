@@ -99,17 +99,53 @@ app.get('/gamepage/:gameid',async (req,res) => {
 
 
 // Route to view a post and its comments
+// app.get('/post/:postid', isLoggedIn, async (req, res) => {
+//   try {
+//     const post = await Post.findOne({_id:req.params.postid}); 
+//     const comments = await Comment.find({ post: req.params.postid })
+//           .sort({ postedAt: 1 });
+//       res.render('post', { post, comments });
+//   } catch (error) {
+//       res.status(500).send("Error retrieving post or comments");
+//   }
+  
+
+// });
 app.get('/post/:postid', isLoggedIn, async (req, res) => {
   try {
-      const post = await Post.findOne({_id:req.params.postid});
-      const comments = await Comment.find({ post: req.params.postid })
-          .sort({ postedAt: 1 });
+    const post = await Post.findOne({ _id: req.params.postid });
+    const comments = await Comment.find({ post: req.params.postid })
+      .sort({ postedAt: 1 });
+    
+    // Function to organize comments into a nested structure
+    const organizeComments = (comments) => {
+      let commentMap = new Map();
+      let roots = [];
 
-      res.render('post', { post, comments });
+      // Create a map of comments by their IDs
+      comments.forEach(comment => commentMap.set(comment._id.toString(), { ...comment._doc, children: [] }));
+
+      // Organize comments into a nested structure
+      comments.forEach(comment => {
+        if (comment.parentId) {
+          const parent = commentMap.get(comment.parentId.toString());
+          if (parent) parent.children.push(commentMap.get(comment._id.toString()));
+        } else {
+          roots.push(commentMap.get(comment._id.toString()));
+        }
+      });
+
+      return roots;
+    };
+
+    const organizedComments = organizeComments(comments);
+
+    res.render('post', { post, comments: organizedComments });
   } catch (error) {
-      res.status(500).send("Error retrieving post or comments");
+    res.status(500).send("Error retrieving post or comments");
   }
 });
+
 
 // Route to create a comment on a post
 app.post('/post/:postid/comment', isLoggedIn, async (req, res) => {
