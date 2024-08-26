@@ -74,11 +74,11 @@
 
             <!-- Division 1 (60% width) -->
             <div class="flex-1 bg-gray-700 bg-opacity-70 text-white p-4 shadow-lg rounded-lg ml-4" style="flex-basis: 60%;">
-                <h2 class="text-xl mb-4">Division 1</h2>
+                <h2 class="text-xl mb-4">All Forums</h2>
                 <% post.forEach(function(posts) { %>
                     <a href="/post/<%= posts._id %>" class="clickable-heading inline">
                     <div class="bg-gray-600 bg-opacity-70 text-white p-4 shadow-lg rounded-lg mb-2 popup-effect">
-                            <h2 class="text-xl mb-2"><%= posts.heading %></h2>
+                            <h2 class="text-xl mb-2 font-custom"><%= posts.heading %></h2>
                         
                         <!-- Add any additional content here -->
                     </div>
@@ -88,8 +88,7 @@
 
             <!-- Division 2 (40% width) -->
             <div class="w-64 bg-gray-700 bg-opacity-70 text-white p-4 shadow-lg rounded-lg ml-4" style="flex-basis: 40%;">
-                <h2 class="text-xl font-custom mb-4">Division 2</h2>
-                <p>Content for Division 2 goes here.</p>
+                <h2 class="text-xl mb-4 font-custom">Recent Replies</h2>
             </div>
         </div>
     </div>
