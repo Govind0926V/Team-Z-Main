@@ -5,11 +5,14 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const usermodel = require('./model/user');
 const postmodel =require("./model/post");
-const commentmodel=require("./model/comment")
+const commentmodel=require("./model/comment");
 const game=require("./model/game")
 const cookieParser = require('cookie-parser');
 const { verify } = require('crypto');
-const post = require('./model/post');
+
+const Comment = require('./model/comment'); // Assuming you saved the schema in model/comment.js
+const Post = require('./model/post'); // Assuming you have a Post model
+
 
 app.set("view engine", "ejs");
 
@@ -68,11 +71,6 @@ app.post('/createPost',isLoggedIn,async (req,res) => {
 }
 )
 
-app.get('/post/:postid',async (req,res) => {
-  let post=await postmodel.findOne({_id:req.params.postid});
-  res.render('post',{post});
-}
-)
 
 app.get('/gamepage/:gameid',async (req,res) => {
   let games = await game.findOne({_id:req.params.gameid});
@@ -80,31 +78,72 @@ app.get('/gamepage/:gameid',async (req,res) => {
 }
 )
 
-app.post('/post/:postid',isLoggedIn,async (req,res) => {
-  let {comment}=req.body;
-  let comment1=await comment.create({
-    author:req.user._id,
-    comment,
-    parentId,
 
-  })
-
-}
-)
-
-// app.post("/post",isLoggedIn,async(req,res) => {
-//   let user=await usermodel.findOne({email:req.user.email});
-//   let {content}=req.body;
-//   let post=await postmodel.create({
-//     userinfo:user._id,
-//     content
-//   })
-
-//   user.posts.push(post._id)
-//   await user.save();
-//   res.redirect('/profile');
+// app.get('/post/:postid',async (req,res) => {
+//   let post=await postmodel.findOne({_id:req.params.postid});
+//   res.render('post',{post});
 // }
 // )
+
+// app.post('/post/:postid',isLoggedIn,async (req,res) => {
+//   let {comment}=req.body;
+//   let comment1=await comment.create({
+//     author:req.user._id,
+//     comment,
+//     parentId,
+
+//   })
+
+// }
+// )
+
+
+// Route to view a post and its comments
+app.get('/post/:postid', isLoggedIn, async (req, res) => {
+  try {
+      const post = await Post.findOne({_id:req.params.postid});
+      const comments = await Comment.find({ post: req.params.postid })
+          .sort({ postedAt: 1 });
+
+      res.render('post', { post, comments });
+  } catch (error) {
+      res.status(500).send("Error retrieving post or comments");
+  }
+});
+
+// Route to create a comment on a post
+app.post('/post/:postid/comment', isLoggedIn, async (req, res) => {
+  try {
+    const { comment, parentId } = req.body;
+    let user=await usermodel.findOne({email:req.user.email});
+      console.log("Step 1 is completed")
+      const newComment = new Comment({
+          userinfo:user._id, // Assuming req.user is set after user authentication
+          post: req.params.postid,
+          comment: comment,
+          parentId: parentId || null,
+      });
+      console.log("Step 2 is completed")
+      // If the comment is a reply, set the rootId
+      if (parentId) {
+        console.log("step 3")
+          const parentComment = await Comment.findOne({_id:parentId});
+          console.log("Step 4 is completed")
+          console.log()
+          newComment.rootId = parentComment.rootId || parentComment._id;
+          console.log("step 5");
+      }
+      
+      await newComment.save();
+      res.redirect(`/post/${req.params.postid}`);
+  } catch (error) {
+      res.status(500).send("Error creating comment");
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
 
 
 app.get('/creategame',isLoggedIn,async (req,res) => {
