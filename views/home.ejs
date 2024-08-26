@@ -45,7 +45,7 @@
                 <li><a href="/profile" class="py-2 px-4 bg-transparent text-white hover:bg-green-500 rounded-lg hover-pop">My Profile</a></li>
                 <li><a href="/creategame" class="py-2 px-4 bg-transparent text-white hover:bg-green-500 rounded-lg hover-transform">Create Game</a></li>
                 <li><a href="/createpost" class="py-2 px-4 bg-transparent text-white hover:bg-green-500 rounded-lg hover-transform">Create Discussion</a></li>
-                <li><a href="/trendingpage" class="py-2 px-4 bg-transparent text-white hover:bg-green-500 rounded-lg hover-transform">Trending Forums</a></li>
+                <li><a href="/trendingpage" class="py-2 px-4 bg-transparent text-white hover:bg-green-500 rounded-lg hover-transform">Trending Games</a></li>
             </ul>
 
             <!-- Right Side: Logout Button -->
@@ -76,12 +76,13 @@
             <div class="flex-1 bg-gray-700 bg-opacity-70 text-white p-4 shadow-lg rounded-lg ml-4" style="flex-basis: 60%;">
                 <h2 class="text-xl mb-4">Division 1</h2>
                 <% post.forEach(function(posts) { %>
+                    <a href="/post/<%= posts._id %>" class="clickable-heading inline">
                     <div class="bg-gray-600 bg-opacity-70 text-white p-4 shadow-lg rounded-lg mb-2 popup-effect">
-                        <a href="/post/<%= posts._id %>" class="clickable-heading">
                             <h2 class="text-xl mb-2"><%= posts.heading %></h2>
-                        </a>
+                        
                         <!-- Add any additional content here -->
                     </div>
+                </a>
                 <% }) %>
             </div>
 
